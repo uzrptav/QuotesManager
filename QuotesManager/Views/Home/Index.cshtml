@@ -1,0 +1,59 @@
+﻿<form id="saveContactForm" method="post">
+    <br>
+<h3>Создать новую цитату</h3>
+    <div class="form-group">
+<p>
+    <label for="quotesId">Id цитаты:</label>
+    <input type="text" name="quoteId" />
+</p>
+    <p>
+    <label for="quoteText">Текст цитаты:</label>
+    <input type="text" name="quoteText" />
+    </p>
+<p>
+    <label for="quotesauthor">Автор:</label>
+    <input type="text" name="author" />
+</p>
+<input type="button" id="saveQuotes" value="Save" />
+        </div>
+</form>
+
+<div id="body">
+    <ul id="quotes"></ul>
+</div>
+
+@section scripts{
+<script type="text/javascript">
+$(function()
+{
+        $.getJSON('/api/quotes', function(quotesJsonPayload)
+        {
+            $(quotesJsonPayload).each(function (i, item)
+            {
+                $('#quotes').append(
+                    '<li>' +
+                  "<i>" + item.quoteText + "</i>" +
+                 "<p>" + item.author + "</p>" +
+                  '</li>'
+                  );
+            });
+        });
+});
+
+$('#saveQuotes').click(function () {
+    $.post("api/quotes",
+          $("#saveContactForm").serialize(),
+          function (value) {
+              $('#quotes').append('<li>' +
+                  "<i>" + value.quoteText + "</i>" +
+                 "<p>" + value.author + "</p>" +
+                  '</li>');
+          },
+          "json"
+    );
+})
+     
+</script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+}

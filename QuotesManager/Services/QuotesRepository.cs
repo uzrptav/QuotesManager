@@ -1,6 +1,8 @@
 ﻿using QuotesManager.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
@@ -46,16 +48,25 @@ namespace QuotesManager.Services
         }
 
         public bool SaveQuotes(Quotes quotes)
-        {
-            var ctx = HttpContext.Current;
-
-            if (ctx != null)
-            {
+        {           
                 try
                 {
-                    var currentData = ((Quotes[])ctx.Cache[CacheKey]).ToList();
-                    currentData.Add(quotes);
-                    ctx.Cache[CacheKey] = currentData.ToArray();
+                    using (SqlConnection openCon = new SqlConnection("workstation id=FreeCodeCamp.mssql.somee.com;packet size=4096;user id=uzrptav_SQLLogin_1;pwd=amvcsm5bx4;data source=FreeCodeCamp.mssql.somee.com;persist security info=False;initial catalog=FreeCodeCamp"))
+                        {
+                            string saveQoute = "INSERT into Quotes (quoteText ,author) VALUES (@quoteText, @author)";
+
+                            using (SqlCommand command = new SqlCommand(saveQoute))
+                           {
+                               command.Connection = openCon;
+                               command.Parameters.Add("@quoteText", SqlDbType.VarChar).Value = quotes.quoteText;
+                               command.Parameters.Add("@author", SqlDbType.VarChar).Value = quotes.author;                            
+                                openCon.Open();
+
+                                command.ExecuteNonQuery();
+
+
+                           }
+                         }
 
                     return true;
                 }
@@ -64,7 +75,7 @@ namespace QuotesManager.Services
                     Console.WriteLine(ex.ToString());
                     return false;
                 }
-            }
+      
 
             return false;
         }

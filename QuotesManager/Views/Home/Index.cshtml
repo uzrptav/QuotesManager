@@ -1,21 +1,19 @@
 ﻿<form id="saveContactForm" method="post">
-    <br>
-<h3>Создать новую цитату</h3>
+<div class="container">
+  <h2>Создать новую цитату</h2>
+  <form>    
     <div class="form-group">
-<p>
-    <label for="quotesId">Id цитаты:</label>
-    <input type="text" name="quoteId" />
-</p>
-    <p>
-    <label for="quoteText">Текст цитаты:</label>
-    <input type="text" name="quoteText" />
-    </p>
-<p>
-    <label for="quotesauthor">Автор:</label>
-    <input type="text" name="author" />
-</p>
-<input type="button" id="saveQuotes" value="Save" />
-        </div>
+      <label for="quoteText">Текст цитаты:</label>
+      <input type="text" class="form-control"  name="quoteText" id="quoteText" placeholder="Введите текст цитаты">
+    </div>
+    <div class="form-group">
+      <label for="quotesauthor">Автор:</label>
+      <input type="text" class="form-control" name="author" id="quotesauthor" placeholder="Введите автора цитаты">
+    </div>
+    
+    <button type="submit" id="saveQuotes" class="btn btn-default">Submit</button>
+  </form>
+</div>
 </form>
 
 <div id="body">
@@ -56,4 +54,8 @@ $('#saveQuotes').click(function () {
 </script>
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 }

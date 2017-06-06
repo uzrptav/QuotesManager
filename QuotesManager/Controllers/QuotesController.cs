@@ -29,7 +29,7 @@ namespace QuotesManager.Controllers
                 this.quotesRepository = new QuotesRepository();
             }
 
-        public Quotes[] Get()
+        public List<Quotes> Get()
         {
             return quotesRepository.GetAllQuotes();
         }

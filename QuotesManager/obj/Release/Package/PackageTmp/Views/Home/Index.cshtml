@@ -1,0 +1,132 @@
+﻿
+
+@Scripts.Render("~/bundles/bootstrap")
+
+<div class="container center-block">
+
+    <form id="saveContactForm" method="post">
+        <h2>Add new quote</h2>
+
+        <div class="form-group">
+            <label for="pwd">Quote text:</label>
+            <input type="text" class="form-control" id="pwd" placeholder="Введите текст цитаты">
+        </div>
+        <div class="form-group">
+            <label for="pwd">Quote Author:</label>
+            <input type="text" class="form-control" id="pwd" placeholder="Введите автора цитаты">
+        </div>
+
+        <input type="button" class="btn btn-default" id="addQuote" value="Add" />
+        <input type="button" class="btn btn-default" id="cancelQuote" value="Cancel" />
+    </form>
+
+    <form id="quoteForm">
+
+        <div class="container text-center" id="quoteContainer">
+
+
+            <div id="quote"></div>
+            <br>
+            <div id="author"></div>
+
+
+            <input type="button" class="btn btn-default" id="nextQuote" value="Next quote" />
+            <input type="button" class="btn btn-default" id="createQuote" value="Add Quote" />
+        </div>
+
+
+
+    </form>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+
+
+<script type="text/javascript">
+
+    var quotes = [
+  {
+      "quotes": "Success is a lousy teacher. It seduces smart people into thinking they can't lose.",
+      "author": "Bill Gates"
+  },
+   {
+       "quotes": "Your most unhappy customers are your greatest source of learning.",
+       "author": "Bill Gates"
+   },
+  {
+      "quotes": "Innovation distinguishes between a leader and a follower.",
+      "author": "Steve Jobs"
+  }
+  ,
+  {
+      "quotes": "Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me.",
+      "author": "Steve Jobs"
+  }
+    ];
+
+    var quoteIndx = 0;
+
+    $(document).ready(function () {
+       
+        $("#saveContactForm").hide();
+        $("#nextQuote").click();
+
+        console.log("Ready");
+        //quotes.push();
+    });
+
+    $("#createQuote").click(function () {
+        $("#saveContactForm").show();
+        $("#quoteForm").hide();
+    });
+
+    $("#addQuote").click(function () {
+        //var json = $("#saveContactForm").serialize();
+        var json = $("#saveContactForm").serializeJSON();
+        console.log("json: " + JSON.stringify(json));
+        $("#saveContactForm").hide();
+        $("#quoteForm").show();
+    });
+
+
+    $("#cancelQuote").click(function () {
+
+        $("#saveContactForm").hide();
+        $("#quoteForm").show();
+    });
+
+    $("#nextQuote").click(function () {
+        
+
+        $.ajax({
+            url: "http://localhost:2361/api/Quotes",
+            type: "Get",
+            success: function (data) { 
+                var quoteCount = data.length;
+                console.log("quoteCount :" + quoteCount);
+
+                if (quoteCount > 0) {
+                    quoteIndx = Math.floor(Math.random() * (quoteCount));
+                    console.log("quoteIndx :" + quoteIndx);
+                    // if (quoteIndx >= quoteCount)       
+                    // {quoteIndx = 0;}
+
+                    var currQuote = "<h3>" + data[quoteIndx].quoteText + "</h3>";
+                    var currAuthor = "<h6>" + data[quoteIndx].author + "</h6>";
+                    //console.log("clicked! Quote Len : " + quoteCount);
+                    //console.log("Current quote is: " + currQuote);
+                    $("#quote").html(currQuote);
+                    $("#author").html(currAuthor);
+                    $("#tweet").html(currQuote);
+                    //quoteIndx++;      
+                }
+            }
+        })
+        });
+
+    $("#tweet").click(function () {
+        //console.log("clicked Tweeter");
+    });
+
+</script>
+

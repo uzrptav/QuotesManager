@@ -1,61 +1,154 @@
-﻿<form id="saveContactForm" method="post">
-<div class="container">
-  <h2>Создать новую цитату</h2>
-  <form>    
-    <div class="form-group">
-      <label for="quoteText">Текст цитаты:</label>
-      <input type="text" class="form-control"  name="quoteText" id="quoteText" placeholder="Введите текст цитаты">
-    </div>
-    <div class="form-group">
-      <label for="quotesauthor">Автор:</label>
-      <input type="text" class="form-control" name="author" id="quotesauthor" placeholder="Введите автора цитаты">
-    </div>
-    
-    <button type="submit" id="saveQuotes" class="btn btn-default">Submit</button>
-  </form>
-</div>
-</form>
+﻿
 
-<div id="body">
-    <ul id="quotes"></ul>
+@Scripts.Render("~/bundles/bootstrap")
+
+<div class="container center-block">
+
+    <form id="saveContactForm" method="post">
+        <h2>Создать новую цитату</h2>
+
+        <div class="form-group">
+            <label for="quoteText">Текст цитаты:</label>
+            <input type="text" class="form-control" name="quoteText" id="quoteText" placeholder="Введите текст цитаты">
+        </div>
+        <div class="form-group">
+            <label for="quotesauthor">Автор:</label>
+            <input type="text" class="form-control" name="author" id="quotesauthor" placeholder="Введите автора цитаты">
+        </div>
+
+        <input type="button" class="btn btn-default" id="addQuote" value="Add" />
+        <input type="button" class="btn btn-default" id="cancelQuote" value="Cancel" />
+    </form>
+
+    <form id="quoteForm">
+
+        <div class="container text-center" id="quoteContainer">
+
+
+            <div id="quote"></div>
+            <br>
+            <div id="author"></div>
+
+
+            <input type="button" class="btn btn-default" id="nextQuote" value="Next quote" />
+            <input type="button" class="btn btn-default" id="createQuote" value="Add Quote" />
+        </div>
+
+
+
+    </form>
 </div>
 
-@section scripts{
+@Scripts.Render("~/bundles/jquery")
+
+
 <script type="text/javascript">
-$(function()
-{
-        $.getJSON('/api/quotes', function(quotesJsonPayload)
-        {
-            $(quotesJsonPayload).each(function (i, item)
-            {
-                $('#quotes').append(
-                    '<li>' +
-                  "<i>" + item.quoteText + "</i>" +
-                 "<p>" + item.author + "</p>" +
-                  '</li>'
-                  );
-            });
-        });
-});
 
-$('#saveQuotes').click(function () {
-    $.post("api/quotes",
-          $("#saveContactForm").serialize(),
-          function (value) {
-              $('#quotes').append('<li>' +
-                  "<i>" + value.quoteText + "</i>" +
-                 "<p>" + value.author + "</p>" +
-                  '</li>');
-          },
-          "json"
-    );
-})
-     
+    var quotes = [
+  {
+      "quotes": "Success is a lousy teacher. It seduces smart people into thinking they can't lose.",
+      "author": "Bill Gates"
+  },
+   {
+       "quotes": "Your most unhappy customers are your greatest source of learning.",
+       "author": "Bill Gates"
+   },
+  {
+      "quotes": "Innovation distinguishes between a leader and a follower.",
+      "author": "Steve Jobs"
+  }
+  ,
+  {
+      "quotes": "Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me.",
+      "author": "Steve Jobs"
+  }
+    ];
+
+    var quoteIndx = 0;
+
+    $(document).ready(function () {
+       
+        $("#saveContactForm").hide();
+        $("#nextQuote").click();
+
+        console.log("Ready");
+        //quotes.push();
+    });
+
+    $("#createQuote").click(function () {
+        $("#saveContactForm").show();
+        $("#quoteForm").hide();
+    });
+
+    $("#addQuote").click(function () {
+
+        var quotes = {};
+        quotes.quoteText = $("#quoteText").val();
+        quotes.author = $("#quotesauthor").val();
+
+        console.log(quotes);
+
+        //var quoteText = $("#QuoteText").val();
+        //var quotesauthor = $("#quotesauthor").val();
+
+        console.log("quoteText: " + quoteText);
+        console.log("author: " + author);
+        console.log("JSON.stringify([quoteText, author]): " + JSON.stringify([quoteText, author]));
+
+        $.ajax({
+            url: "http://localhost:2361/api/Quotes",
+            type: "POST",
+            data: JSON.stringify(quotes), //{ QuoteText: quoteText, 
+            // Author: author }
+            contentType: 'application/json; charset=utf-8',
+            success: function (quotes) {
+                console.log(JSON.stringify(quotes));
+                $("#saveContactForm").hide();
+                $("#quoteForm").show();
+            },
+            error: function () { alert('error'); }
+        });
+    });
+
+
+    $("#cancelQuote").click(function () {
+
+        $("#saveContactForm").hide();
+        $("#quoteForm").show();
+    });
+
+    $("#nextQuote").click(function () {
+        
+
+        $.ajax({
+            url: "http://localhost:2361/api/Quotes",
+            type: "Get",
+            success: function (data) { 
+                var quoteCount = data.length;
+                console.log("quoteCount :" + quoteCount);
+
+                if (quoteCount > 0) {
+                    quoteIndx = Math.floor(Math.random() * (quoteCount));
+                    console.log("quoteIndx :" + quoteIndx);
+                    // if (quoteIndx >= quoteCount)       
+                    // {quoteIndx = 0;}
+
+                    var currQuote = "<h3>" + data[quoteIndx].quoteText + "</h3>";
+                    var currAuthor = "<h6>" + data[quoteIndx].author + "</h6>";
+                    //console.log("clicked! Quote Len : " + quoteCount);
+                    //console.log("Current quote is: " + currQuote);
+                    $("#quote").html(currQuote);
+                    $("#author").html(currAuthor);
+                    $("#tweet").html(currQuote);
+                    //quoteIndx++;      
+                }
+            }
+        })
+        });
+
+    $("#tweet").click(function () {
+        //console.log("clicked Tweeter");
+    });
+
 </script>
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-}

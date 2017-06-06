@@ -13,7 +13,7 @@ namespace QuotesManager.Controllers
     {
         private QuotesRepository quotesRepository;
 
-
+        [HttpPost]
         public HttpResponseMessage Post(Quotes quotes)
         {
             this.quotesRepository.SaveQuotes(quotes);
